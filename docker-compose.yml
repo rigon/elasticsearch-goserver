@@ -22,8 +22,6 @@ services:
   kibana_go:
     container_name: kibana_go
     image: docker.elastic.co/kibana/kibana-oss:6.2.3
-    links:
-      - elasticsearch
     ports:
       - 5600:5601
     tty: true
