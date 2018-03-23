@@ -7,48 +7,37 @@ import (
 	"os"
 )
 
+func slash(w http.ResponseWriter, r *http.Request) {
+	r.Write(os.Stdout)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+}
 func nodes(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("nodes")
-
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprint(w, `{
-		"nodes": {
-		  "CVp5QJV9RcayNf4ivywb5w": {
-			"ip": "172.17.0.2",
-			"version": "6.2.2",
-			"http": {
-			  "publish_address": "172.17.0.2:9200"
-			}
-		  }
-		}
-	  }`)
+	r.Write(os.Stdout)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	fmt.Fprint(w, `{"nodes":{"GpFynDbQST-OLBNmIlRMQA":{"ip":"172.23.0.2","version":"6.2.3","http":{"publish_address":"172.23.0.2:9200"}}}}`)
 }
 func nodesLocal(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("nodes_local")
-
-	w.Header().Set("Content-Type", "application/json")
+	r.Write(os.Stdout)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	fmt.Fprint(w, `{}`)
 }
-
-func slash(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("/")
-
-	w.Header().Set("Content-Type", "application/json")
-	fmt.Fprint(w, `{
-		"name": "CVp5QJV",
-		"cluster_name": "docker-cluster",
-		"cluster_uuid": "dYsZenEOT_CNHasr1ch4IQ",
-		"version": {
-		  "number": "6.2.2",
-		  "build_hash": "10b1edd",
-		  "build_date": "2018-02-16T19:01:30.685723Z",
-		  "build_snapshot": false,
-		  "lucene_version": "7.2.1",
-		  "minimum_wire_compatibility_version": "5.6.0",
-		  "minimum_index_compatibility_version": "5.0.0"
-		},
-		"tagline": "You Know, for Search"
-	  }`)
+func kibanaMappings(w http.ResponseWriter, r *http.Request) {
+	r.Write(os.Stdout)
+	w.WriteHeader(http.StatusNotFound)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	fmt.Fprint(w, `{"error":{"root_cause":[{"type":"index_not_found_exception","reason":"no such index","resource.type":"index_or_alias","resource.id":".kibana","index_uuid":"_na_","index":".kibana"}],"type":"index_not_found_exception","reason":"no such index","resource.type":"index_or_alias","resource.id":".kibana","index_uuid":"_na_","index":".kibana"},"status":404}`)
+}
+func kibanaConfig(w http.ResponseWriter, r *http.Request) {
+	r.Write(os.Stdout)
+	w.WriteHeader(http.StatusNotFound)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	fmt.Fprint(w, `{"error":{"root_cause":[{"type":"index_not_found_exception","reason":"no such index","resource.type":"index_expression","resource.id":".kibana","index_uuid":"_na_","index":".kibana"}],"type":"index_not_found_exception","reason":"no such index","resource.type":"index_expression","resource.id":".kibana","index_uuid":"_na_","index":".kibana"},"status":404}`)
+}
+func kibanaSearch(w http.ResponseWriter, r *http.Request) {
+	r.Write(os.Stdout)
+	w.WriteHeader(http.StatusNotFound)
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	fmt.Fprint(w, `{"error":{"root_cause":[{"type":"index_not_found_exception","reason":"no such index","resource.type":"index_or_alias","resource.id":".kibana","index_uuid":"_na_","index":".kibana"}],"type":"index_not_found_exception","reason":"no such index","resource.type":"index_or_alias","resource.id":".kibana","index_uuid":"_na_","index":".kibana"},"status":404}`)
 }
 
 func sayhelloName(w http.ResponseWriter, r *http.Request) {
@@ -72,6 +61,9 @@ func main() {
 	http.HandleFunc("/", slash)
 	http.HandleFunc("/_nodes", nodes)
 	http.HandleFunc("/_nodes/_local", nodesLocal)
+	http.HandleFunc("/.kibana/_mappings", kibanaMappings)
+	http.HandleFunc("/.kibana/doc/config%3A6.2.3", kibanaConfig)
+	http.HandleFunc("/.kibana/_search", kibanaConfig)
 
 	err := http.ListenAndServe(":9090", nil)
 	if err != nil {
